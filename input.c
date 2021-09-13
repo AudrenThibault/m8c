@@ -13,7 +13,8 @@
 SDL_GameController *game_controllers[MAX_CONTROLLERS];
 
 // Bits for M8 input messages
-enum keycodes {
+enum keycodes
+{
   key_left = 1 << 7,
   key_up = 1 << 6,
   key_down = 1 << 5,
@@ -30,13 +31,15 @@ uint8_t keyjazz_base_octave = 2;
 uint8_t keycode = 0; // value of the pressed key
 input_msg_s key = {normal, 0};
 
-uint8_t toggle_input_keyjazz() {
+uint8_t toggle_input_keyjazz()
+{
   keyjazz_enabled = !keyjazz_enabled;
   return keyjazz_enabled;
 }
 
 // Opens available game controllers and returns the amount of opened controllers
-int initialize_game_controllers() {
+int initialize_game_controllers()
+{
 
   int num_joysticks = SDL_NumJoysticks();
   int controller_index = 0;
@@ -45,7 +48,8 @@ int initialize_game_controllers() {
   SDL_Delay(
       1); // Some controllers like XBone wired need a little while to get ready
   // Open all available game controllers
-  for (int i = 0; i < num_joysticks; i++) {
+  for (int i = 0; i < num_joysticks; i++)
+  {
     if (!SDL_IsGameController(i))
       continue;
     if (controller_index >= MAX_CONTROLLERS)
@@ -63,17 +67,21 @@ int initialize_game_controllers() {
 }
 
 // Closes all open game controllers
-void close_game_controllers() {
+void close_game_controllers()
+{
 
-  for (int i = 0; i < MAX_CONTROLLERS; i++) {
+  for (int i = 0; i < MAX_CONTROLLERS; i++)
+  {
     if (game_controllers[i])
       SDL_GameControllerClose(game_controllers[i]);
   }
 }
 
-static input_msg_s handle_keyjazz(SDL_Event *event, uint8_t keyvalue) {
+static input_msg_s handle_keyjazz(SDL_Event *event, uint8_t keyvalue)
+{
   input_msg_s key = {keyjazz, keyvalue};
-  switch (event->key.keysym.scancode) {
+  switch (event->key.keysym.scancode)
+  {
   case SDL_SCANCODE_Z:
     key.value = keyjazz_base_octave * 12;
     break;
@@ -163,14 +171,16 @@ static input_msg_s handle_keyjazz(SDL_Event *event, uint8_t keyvalue) {
     break;
   case SDL_SCANCODE_KP_DIVIDE:
     key.type = normal;
-    if (event->type == SDL_KEYDOWN && keyjazz_base_octave > 0) {
+    if (event->type == SDL_KEYDOWN && keyjazz_base_octave > 0)
+    {
       keyjazz_base_octave--;
       display_keyjazz_overlay(1, keyjazz_base_octave);
     }
     break;
   case SDL_SCANCODE_KP_MULTIPLY:
     key.type = normal;
-    if (event->type == SDL_KEYDOWN && keyjazz_base_octave < 8) {
+    if (event->type == SDL_KEYDOWN && keyjazz_base_octave < 8)
+    {
       keyjazz_base_octave++;
       display_keyjazz_overlay(1, keyjazz_base_octave);
     }
@@ -183,9 +193,11 @@ static input_msg_s handle_keyjazz(SDL_Event *event, uint8_t keyvalue) {
   return key;
 }
 
-static input_msg_s handle_normal_keys(SDL_Event *event, uint8_t keyvalue) {
+static input_msg_s handle_normal_keys(SDL_Event *event, uint8_t keyvalue)
+{
   input_msg_s key = {normal, keyvalue};
-  switch (event->key.keysym.scancode) {
+  switch (event->key.keysym.scancode)
+  {
 
   case SDL_SCANCODE_UP:
     key.value = key_up;
@@ -239,9 +251,11 @@ static input_msg_s handle_normal_keys(SDL_Event *event, uint8_t keyvalue) {
 }
 
 static input_msg_s handle_game_controller_buttons(SDL_Event *event,
-                                                  uint8_t keyvalue) {
+                                                  uint8_t keyvalue)
+{
   input_msg_s key = {normal, keyvalue};
-  switch (event->cbutton.button) {
+  switch (event->cbutton.button)
+  {
 
   case SDL_CONTROLLER_BUTTON_DPAD_UP:
     key.value = key_up;
@@ -275,6 +289,10 @@ static input_msg_s handle_game_controller_buttons(SDL_Event *event,
     key.value = key_opt;
     break;
 
+  case SDL_CONTROLLER_BUTTON_X:
+    key = (input_msg_s){special, msg_quit};
+    break;
+
   default:
     key.value = 0;
     break;
@@ -284,13 +302,15 @@ static input_msg_s handle_game_controller_buttons(SDL_Event *event,
 }
 
 // Handles SDL input events
-void handle_sdl_events() {
+void handle_sdl_events()
+{
 
   SDL_Event event;
 
   SDL_PollEvent(&event);
 
-  switch (event.type) {
+  switch (event.type)
+  {
 
   // Reinitialize game controllers on controller add/remove/remap
   case SDL_CONTROLLERDEVICEADDED:
@@ -308,19 +328,22 @@ void handle_sdl_events() {
 
     // ALT+ENTER toggles fullscreen
     if (event.key.keysym.sym == SDLK_RETURN &&
-        (event.key.keysym.mod & KMOD_ALT) > 0) {
+        (event.key.keysym.mod & KMOD_ALT) > 0)
+    {
       toggle_fullscreen();
       break;
     }
 
     // ALT+F4 quits program
     if (event.key.keysym.sym == SDLK_F4 &&
-        (event.key.keysym.mod & KMOD_ALT) > 0) {
+        (event.key.keysym.mod & KMOD_ALT) > 0)
+    {
       key = (input_msg_s){special, msg_quit};
     }
 
     // ESC = toggle keyjazz
-    if (event.key.keysym.sym == SDLK_ESCAPE) {
+    if (event.key.keysym.sym == SDLK_ESCAPE)
+    {
       display_keyjazz_overlay(toggle_input_keyjazz(), keyjazz_base_octave);
     }
 
@@ -343,12 +366,15 @@ void handle_sdl_events() {
   }
 
   // Do not allow pressing multiple keys with keyjazz
-  if (key.type == normal) {
+  if (key.type == normal)
+  {
     if (event.type == SDL_KEYDOWN || event.type == SDL_CONTROLLERBUTTONDOWN)
       keycode |= key.value;
     else
       keycode &= ~key.value;
-  } else {
+  }
+  else
+  {
     if (event.type == SDL_KEYDOWN)
       keycode = key.value;
     else
@@ -357,22 +383,27 @@ void handle_sdl_events() {
 }
 
 // Returns the currently pressed keys to main
-input_msg_s get_input_msg() {
+input_msg_s get_input_msg()
+{
 
   key = (input_msg_s){normal, 0};
 
   // Query for SDL events
   handle_sdl_events();
 
-  if (keycode == (key_start|key_select|key_opt|key_edit)){
-    key = (input_msg_s){special,msg_reset_display};
+  if (keycode == (key_start | key_select | key_opt | key_edit))
+  {
+    key = (input_msg_s){special, msg_reset_display};
   }
 
-  if (key.type == normal) {
+  if (key.type == normal)
+  {
     /* Normal input keys go through some event-based manipulation in
        handle_sdl_events(), the value is stored in keycode variable */
     return (input_msg_s){key.type, keycode};
-  } else {
+  }
+  else
+  {
     // Special event keys already have the correct keycode baked in
     return key;
   }
