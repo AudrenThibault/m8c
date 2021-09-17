@@ -1,3 +1,6 @@
+Recompilation :
+make clean && make && sudo make install
+
 # m8c
 
 m8c is a client for Dirtywave M8 tracker's headless mode. The application should be cross-platform ready and can be built in Linux, Windows (with MSYS2/MINGW64) and Mac OS.
