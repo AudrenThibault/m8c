@@ -277,6 +277,14 @@ static input_msg_s handle_game_controller_buttons(SDL_Event *event,
     key.value = key_select;
     break;
 
+  case SDL_CONTROLLER_BUTTON_LEFTSHOULDER:
+    key.value = key_select;
+    break;
+
+  case SDL_CONTROLLER_BUTTON_RIGHTSHOULDER:
+    key.value = key_select;
+    break;
+
   case SDL_CONTROLLER_BUTTON_START:
     key.value = key_start;
     break;
@@ -289,7 +297,7 @@ static input_msg_s handle_game_controller_buttons(SDL_Event *event,
     key.value = key_opt;
     break;
 
-  case SDL_CONTROLLER_BUTTON_X:
+  case SDL_CONTROLLER_BUTTON_Y:
     key = (input_msg_s){special, msg_quit};
     break;
 
@@ -391,9 +399,9 @@ input_msg_s get_input_msg()
   // Query for SDL events
   handle_sdl_events();
 
-  if (keycode == (key_start | key_select | key_opt | key_edit))
+  if (keycode == (key_start | key_select))
   {
-    key = (input_msg_s){special, msg_reset_display};
+      key = (input_msg_s){special, msg_quit};
   }
 
   if (key.type == normal)
