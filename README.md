@@ -1,5 +1,18 @@
-Recompilation :
+### Problèmes (troubleshooting) ###
+
+# Recompilation :
 make clean && make && sudo make install
+
+# Si problème avec libserialport faire : 
+apt-get remove libserialport0 and libserialport-dev and reinstall it from https://github.com/sigrokproject/libserialport
+
+# If it still doesn't work try : (use these paths even if reinstalled libserialport is somewhere else)
+❯ sudo ln -s /usr/local/lib/libserialport.so.0.1.0 /usr/lib/libserialport.so.0.1.0
+❯ sudo ln -s /usr/local/lib/libserialport.so.0 /usr/lib/libserialport.so.0
+
+# If it still doesn't work maybe try : 
+https://stackoverflow.com/questions/480764/linux-error-while-loading-shared-libraries-cannot-open-shared-object-file-no-s
+
 
 # m8c
 
