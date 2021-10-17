@@ -1,7 +1,7 @@
-# Problèmes (troubleshooting) ###
-
-### Recompilation :
+# Recompilation :
 make clean && make && sudo make install
+
+# Problèmes (troubleshooting) ###
 
 ### Si problème avec libserialport faire (if problem with libserialport port do) : 
 apt-get remove libserialport0 and libserialport-dev and reinstall it from https://github.com/sigrokproject/libserialport
